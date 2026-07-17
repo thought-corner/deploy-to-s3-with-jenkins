@@ -15,18 +15,24 @@ pipeline {
                     args "--entrypoint=''"
                 }
             }
-            environment {
-                AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
-                AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-                // 버킷 이름도 코드에 박지 않고 Jenkins credential(Secret text)로 주입
-                S3_BUCKET             = credentials('s3-bucket-name')
-            }
             steps {
-                sh '''
-                    aws --version
-                    # site 폴더의 정적 파일을 S3 버킷으로 동기화 (--delete: 버킷의 옛 파일 제거)
-                    aws s3 sync ./site "s3://$S3_BUCKET" --delete
-                '''
+                // 강좌 방식: 키 한 쌍을 usernamePassword credential 하나로 묶어 주입
+                // username=Access key ID, password=Secret access key
+                // 버킷 이름은 Secret text(string)로 함께 주입
+                withCredentials([
+                    usernamePassword(credentialsId: 'my-aws',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'),
+                    string(credentialsId: 's3-bucket-name', variable: 'S3_BUCKET')
+                ]) {
+                    sh '''
+                        aws --version
+                        # site 폴더의 정적 파일을 S3 버킷으로 동기화 (--delete: 버킷의 옛 파일 제거)
+                        aws s3 sync ./site "s3://$S3_BUCKET" --delete
+                        # 배포 결과 확인 (그 버킷 안 파일 목록 — 최소권한으로도 동작)
+                        aws s3 ls "s3://$S3_BUCKET" --recursive
+                    '''
+                }
             }
         }
     }

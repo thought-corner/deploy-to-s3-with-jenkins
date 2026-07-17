@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>s3deploy · Static Site</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<main class="card">
+		<span class="badge">Static · AWS S3</span>
+		<h1>안녕하세요, <span id="name">방문자</span>님</h1>
+		<p class="lead">Jenkins로 AWS S3에 배포하는 정적 웹사이트 학습용 데모입니다.</p>
+
+		<div class="field">
+			<label for="nameInput">이름</label>
+			<input id="nameInput" type="text" placeholder="이름을 입력하면 인사가 바뀝니다">
+		</div>
+
+		<section>
+			<h2>학습 내용</h2>
+			<ul id="features"></ul>
+		</section>
+
+		<footer>
+			현재 시각 · <strong id="clock">-</strong>
+			<span class="hint">(서버가 아니라 브라우저에서 계산됩니다)</span>
+		</footer>
+	</main>
+	<script src="js/main.js"></script>
+</body>
+</html>
